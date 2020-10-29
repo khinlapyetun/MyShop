@@ -17,8 +17,9 @@ namespace MyShop.Services
         public const string BasketSessionName = "eCommerceBasket";
         public BasketService(IRespository<Product> ProductContext, IRespository<Basket> BasketContext)
         {
-            this.productContext = ProductContext;
+            
             this.basketContext = BasketContext;
+            this.productContext = ProductContext;
         }
 
         private Basket GetBasket(HttpContextBase httpContext, bool createIfNull)
@@ -67,9 +68,9 @@ namespace MyShop.Services
         }
         public void AddToBasket(HttpContextBase httpContext, string productId)
         {
-            Basket basket = new Basket();
+            Basket basket = GetBasket(httpContext, true); 
             BasketItem item = basket.BasketItems.FirstOrDefault(i => i.ProductId == productId);
-            if (item != null)
+            if (item == null)
             {
                 item = new BasketItem()
                 {
@@ -88,7 +89,7 @@ namespace MyShop.Services
         }
         public void RemoveFromBasket(HttpContextBase httpContext, string itemId)
         {
-            Basket basket = new Basket();
+            Basket basket = GetBasket(httpContext, true);
             BasketItem item = basket.BasketItems.FirstOrDefault(i => i.Id == itemId);
             if (item != null)
             {
